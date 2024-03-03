@@ -1,4 +1,24 @@
+import Todo from '@/components/Todo';
+// import useSWR from 'swr';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+
+// async function fetcher(key) {
+// 	return fetcher(key).then((res) => res.json());
+// }
+
 export default function Home() {
+	// const { data, isLoading, error } = useSWR('http://localhost:8080/todos', fetcher);
+	// console.log(data);
+	const [todos, setTodos] = useState([]);
+	useEffect(() => {
+		(async () => {
+			const response = await axios.get('http://localhost:8080/todos');
+			console.log(response.data);
+			setTodos(response.data);
+		})();
+	}, []);
+
 	return (
 		<div className="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-32 py-4 px-4">
 			<div className="px-4 py-2">
@@ -12,7 +32,6 @@ export default function Home() {
       focus:outline-none"
 						type="text"
 						placeholder="Add a task"
-						value="{title}"
 					/>
 					<button
 						className="duration-150 flex-shrink-0 bg-blue-500 hover:bg-blue-700 border-blue-500 hover:border-blue-700 text-sm border-4 text-white py-1 px-2 rounded"
@@ -23,31 +42,9 @@ export default function Home() {
 				</div>
 			</form>
 			<ul className="divide-y divide-gray-200 px-4">
-				<li className="py-4">
-					<div className="flex items-center justify-between">
-						<div className="flex items-center">
-							<input
-								id="todo1"
-								name="todo1"
-								type="checkbox"
-								checked="{todo.isCompleted}"
-								className="h-4 w-4 text-teal-600 focus:ring-teal-500
-                  border-gray-300 rounded"
-							/>
-							<label className="ml-3 block text-gray-900">
-								<span className="text-lg font-medium mr-2"> 散歩 </span>
-							</label>
-						</div>
-						<div className="flex items-center space-x-2">
-							<button className="duration-150 bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-2 rounded">
-								✒
-							</button>
-							<button className="bg-red-500 hover:bg-red-600 text-white font-medium py-1 px-2 rounded">
-								✖
-							</button>
-						</div>
-					</div>
-				</li>
+				{todos?.map((todo) => (
+					<Todo todo={todo} />
+				))}
 			</ul>
 		</div>
 	);
